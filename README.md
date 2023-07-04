@@ -1,4 +1,4 @@
-# ArtArch
+# AA - Art Arc
 
 A place for artists to manage their arts.
 
@@ -12,8 +12,8 @@ A place for artists to manage their arts.
 
 ## Todos
 
-* [ ] Draw ER Diagram
-* [ ] Create the DB and Tables
+* [x] Draw ER Diagram
+* [x] Create the DB and Tables
 * [ ] Develop the UI
 * [ ] Develop the Backend & Frontend
 * [ ] Make it secure
