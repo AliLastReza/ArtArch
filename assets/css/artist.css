@@ -1,0 +1,23 @@
+.bg-gray-aa {
+    background-color: #5c5e5f;
+}
+
+.art-desc {
+    top: 25%;
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: none;
+}
+
+.artwork:hover .art-desc {
+    display: block;
+}
+
+.nav-link-aa:hover {
+    text-decoration: underline !important;
+}
+
+.search::placeholder {
+    color: var(--bs-body-tertiary) !important;
+    opacity: 0.7;
+}
