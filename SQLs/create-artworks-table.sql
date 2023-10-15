@@ -3,9 +3,9 @@ CREATE TABLE artworks (
     title varchar(50) NOT NULL,
     description text,
     userId int(11) NOT NULL,
-    filename varchar(60) NOT NULL,
+    filename varchar(255) NOT NULL,
     width int(6) NOT NULL,
     height int(6) NOT NULL,
-    createdAt date NOT NULL,
-    updatedAt date NOT NULL
+    createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
+    updatedAt timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

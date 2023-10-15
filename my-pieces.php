@@ -44,7 +44,14 @@ include_once 'dash-header.php';
         <div class="col-10 py-4">
             <div class="row">
                 <div class="col-auto ms-3">
-                    <h1 class="h2 fw-normal">Pieces <small class="text-secondary h4">(18)</small></h1>
+                    <h1 class="h2 fw-normal">Pieces <small class="text-secondary h4">
+                            (<?php
+                                include_once 'includes/dbh.inc.php';
+                                include_once 'includes/functions.inc.php';
+                                $userArtworkCount = getUserArtworkCount($conn, $_SESSION['userId']);
+                                echo $userArtworkCount;
+                                ?>)
+                        </small></h1>
                 </div>
                 <div class="col-auto">
                     <form class="w-100 mt-2" role="search">
@@ -65,79 +72,103 @@ include_once 'dash-header.php';
                 </div>
             </div>
 
-
             <div class="row mx-auto mt-4" data-masonry="{&quot;percentPosition&quot;: true }" style="width: 100%; height: 4500px;">
-                <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
-                    <div class="card artwork border-0">
-                        <img src="https://d1zdxptf8tk3f9.cloudfront.net/artist_21441/info/large/Artist_Michelle_Locklear.jpg?1613600122" class="card-img-top rounded-0" alt="">
-                        <div class="card-body p-1">
-                            <p class="text-center mb-0 fw-semibold text-body-secondary">5 Tomatoes</p>
-                            <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
-                                2012, Oil
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                <?php
+                include_once 'includes/dbh.inc.php';
+                include_once 'includes/functions.inc.php';
+                include_once 'includes/constants.inc.php';
 
-                <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
-                    <div class="card artwork border-0">
-                        <img src="https://assets.artworkarchive.com/image/upload/t_square_crop_small/v1/user_673/Unstoppable_Passion_000720-1__48x48_cnd6hf" class="card-img-top rounded-0" alt="">
-                        <div class="card-body p-1">
-                            <p class="text-center mb-0 fw-semibold text-body-secondary">5 Tomatoes</p>
-                            <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
-                                2012, Oil
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
-                    <div class="card artwork border-0">
-                        <img src="https://d1zdxptf8tk3f9.cloudfront.net/artist_21441/info/large/Artist_Michelle_Locklear.jpg?1613600122" class="card-img-top rounded-0" alt="">
-                        <div class="card-body p-1">
-                            <p class="text-center mb-0 fw-semibold text-body-secondary">5 Tomatoes</p>
-                            <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
-                                2012, Oil
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                $page = 1;
+                if (isset($_GET['page'])) {
+                    $page = intval($_GET['page']);
+                }
+                $offset = ($page - 1) * $MY_PIECES_PAGE_LIMIT;
+                $artworks = getUserArtworks($conn, $_SESSION["userId"], $MY_PIECES_PAGE_LIMIT, $offset);
 
-                <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
-                    <div class="card artwork border-0">
-                        <img src="https://assets.artworkarchive.com/image/upload/t_square_crop_small/v1/user_673/Unstoppable_Passion_000720-1__48x48_cnd6hf" class="card-img-top rounded-0" alt="">
-                        <div class="card-body p-1">
-                            <p class="text-center mb-0 fw-semibold text-body-secondary">5 Tomatoes</p>
-                            <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
-                                2012, Oil
-                            </small>
-                        </div>
-                    </div>
-                </div>
+                foreach ($artworks as $artwork) {
+                    echo '
+                        <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
+                            <a href="edit-artwork.php?artId=' . $artwork['id'] . '" class="text-decoration-none">
+                                <div class="card artwork border-0">
+                                    <img src="' . $ARTWORKS_DIR . $artwork['filename'] . '" class="card-img-top rounded-0" alt="">
+                                    <div class="card-body p-1">
+                                        <p class="text-center mb-0 fw-semibold text-body-secondary">' . $artwork['title'] . '</p>
+                                        <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
+                                            ' . $artwork['description'] . '
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>';
+                };
 
-
-                <div class="col-sm-4 col-lg-3 mb-4" style="position: absolute; left: 0%; top: 361.6px;">
-                    <div class="card artwork border-0">
-                        <img src="https://d1zdxptf8tk3f9.cloudfront.net/artist_21441/info/large/Artist_Michelle_Locklear.jpg?1613600122" class="card-img-top rounded-0" alt="">
-                        <div class="card-body p-1">
-                            <p class="text-center mb-0 fw-semibold text-body-secondary">5 Tomatoes</p>
-                            <small class="d-block text-center fw-semibold text-body-secondary" style="font-size: 12px;">
-                                2012, Oil
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
+                echo '
+                <div class="row">
                 <nav aria-label="...">
+                    <ul class="pagination justify-content-center mt-5">';
+
+                if ($page === 1) {
+                    echo '
+                    <li class="page-item disabled">
+                            <a class="page-link" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>';
+                } else {
+                    echo '
+                    <li class="page-item">
+                            <a class="page-link" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>';
+                }
+
+                $pageCount = intdiv($userArtworkCount, $MY_PIECES_PAGE_LIMIT) + 1;
+
+                for ($i = 1; $i <= $pageCount; $i++) {
+                    if ($i === $page) {
+                        echo '
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#   ">' . $i . '</a></li>';
+                    } else {
+                        $fullUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                        $iLink = addAParamToQueryString($fullUrl, "page", $i);
+                        echo '
+                        <li class="page-item"><a class="page-link" href="' . $iLink . '">' . $i . '</a></li>';
+                    }
+                }
+
+                if ($page === $pageCount) {
+                    echo '
+                    <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>';
+                } else {
+                    echo '
+                    <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>';
+                }
+
+                echo '
+                </ul>
+            </nav>
+            </div>';
+
+                ?>
+
+                <!-- <nav aria-label="...">
                     <ul class="pagination justify-content-center mt-5">
-                        <li class="page-item disabled">
+                    <li class="page-item disabled">
                             <a class="page-link" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item active" aria-current="page">
-                            <a class="page-link" href="#">2</a>
-                        </li>
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#">2</a></li>
                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                         <li class="page-item">
                             <a class="page-link" href="#" aria-label="Next">
@@ -145,7 +176,7 @@ include_once 'dash-header.php';
                             </a>
                         </li>
                     </ul>
-                </nav>
+                </nav> -->
             </div>
         </div>
     </div>

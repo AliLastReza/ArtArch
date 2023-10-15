@@ -11,32 +11,41 @@ include 'header.php';
             </div>
 
             <div class="modal-body p-5 pt-0">
-                <form action="includes/signup.inc.php" method="post" id="signUpForm" data-bitwarden-watching="1">
+                <form action="includes/signup.inc.php" method="post" id="signUpForm" data-bitwarden-watching="1" novalidate class="needs-validation">
                     <div class="form-floating mb-3">
-                        <input type="text" name="name" class="form-control rounded-3" id="nameInput" placeholder="Name">
+                        <input type="text" name="name" class="form-control rounded-3" id="nameInput" placeholder="Name" required>
                         <label for="nameInput">Name</label>
-                        <div class="invalid-feedback" id>
-                            This field is required.
+                        <div class="valid-feedback">
+                            Looks good!
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="email" class="form-control rounded-3" id="emailInput" placeholder="Email Address">
+                        <input type="email" name="email" class="form-control rounded-3" id="emailInput" placeholder="Email Address" required>
                         <label for="emailInput">Email Address</label>
+                        <div class="invalid-feedback">
+                            Please provide a valid email.
+                        </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" name="username" class="form-control rounded-3" id="usernameInput" placeholder="Username">
+                        <input type="text" name="username" class="form-control rounded-3" id="usernameInput" placeholder="Username" required>
                         <label for="usernameInput">Username</label>
                         <div class="invalid-feedback">
                             Someone already has that username. Try another?
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" name="pwd" class="form-control rounded-3" id="pwdInput" placeholder="Password">
+                        <input type="password" name="pwd" class="form-control rounded-3" id="pwdInput" placeholder="Password" required>
                         <label for="pwdInput">Password</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" name="pwdRepeat" class="form-control rounded-3" id="pwdRepeat" placeholder="Repeat Password">
+                        <input type="password" name="pwdRepeat" class="form-control rounded-3" id="pwdRepeat" placeholder="Repeat Password" required>
                         <label for="pwdRepeat">Repeat Password</label>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
                     <input type="hidden" name="submit" value="sign-up">
                     <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" name="submit">Sign up</button>
@@ -48,8 +57,8 @@ include 'header.php';
                         var usernameMinLength = 3;
 
                         $("#usernameInput").keyup(function() {
-                            $("#usernameInput").removeClass("is-invalid")
-                            $("#usernameInput").removeClass("is-valid")
+                            // $("#usernameInput").removeClass("is-invalid")
+                            // $("#usernameInput").removeClass("is-valid")
                             var that = this,
                                 value = $(this).val();
 
@@ -63,13 +72,15 @@ include 'header.php';
                                         'username': value
                                     },
                                     dataType: "text",
-                                    success: function(data) {
+                                    success: function(result) {
                                         //we need to check if the value is the same
+                                        result = JSON.parse(result)
                                         if (value == $(that).val()) {
-                                            if (data["isUsernameExists"]) {
-                                                $("#usernameInput").addClass("is-invalid")
+                                            console.log(result);
+                                            if (result.isUsernameExists) {
+                                                $("#usernameInput").removeClass("is-valid").addClass("is-invalid");
                                             } else {
-                                                $("#usernameInput").addClass("is-valid")
+                                                $("#usernameInput").removeClass("is-invalid").addClass("is-valid");
                                             }
                                         }
                                     }
@@ -77,35 +88,79 @@ include 'header.php';
                             }
                         });
 
-                        var isEmailExistsReq = null;
+                        function validateEmail(email) {
+                            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            return re.test(email);
+                        }
 
-                        $("#emailInput").blur(function() {
-                            $("#emailInput").removeClass("is-invalid")
-                            $("#emailInput").removeClass("is-valid")
-                            var that = this,
-                                value = $(this).val();
+                        const validateEmailInput = () => {
+                            const $result = $('#result');
+                            const email = $('#email').val();
+                            $result.text('');
 
-                            if (isEmailExistsReq != null)
-                                isEmailExistsReq.abort();
-                            isEmailExistsReq = $.ajax({
-                                type: "GET",
-                                url: "includes/is-email-exists.inc.php",
-                                data: {
-                                    'email': value
-                                },
-                                dataType: "text",
-                                success: function(data) {
-                                    //we need to check if the value is the same
-                                    if (value == $(that).val()) {
-                                        if (data["isEmailExists"]) {
-                                            $("#emailInput").addClass("is-invalid")
-                                        } else {
-                                            $("#emailInput").addClass("is-valid")
-                                        }
+                            if (validateEmail(email)) {
+                                $("#emailInput").setCustomValidity("");
+                                // $("#emailInput").removeClass("is-invalid").addClass("is-valid");
+                                // $result.text(email + ' is valid.');
+                            } else {
+                                $("#emailInput").setCustomValidity("Not valid");
+                                // $("#emailInput").removeClass("is-valid").addClass("is-invalid");
+                            }
+                            return false;
+                        }
+
+                        $('#emailInput').on('input', validateEmailInput);
+
+                        // var isEmailExistsReq = null;
+
+                        // $("#emailInput").blur(function() {
+                        //     $("#emailInput").removeClass("is-invalid")
+                        //     $("#emailInput").removeClass("is-valid")
+                        //     var that = this,
+                        //         value = $(this).val();
+
+                        //     if (isEmailExistsReq != null)
+                        //         isEmailExistsReq.abort();
+                        //     isEmailExistsReq = $.ajax({
+                        //         type: "GET",
+                        //         url: "includes/is-email-exists.inc.php",
+                        //         data: {
+                        //             'email': value
+                        //         },
+                        //         dataType: "text",
+                        //         success: function(data) {
+                        //             //we need to check if the value is the same
+                        //             data = JSON.parse(data)
+                        //             if (value == $(that).val()) {
+                        //                 console.log(data);
+                        //                 if (data.isEmailExists) {
+                        //                     $("#emailInput").addClass("is-invalid")
+                        //                 } else {
+                        //                     $("#emailInput").addClass("is-valid")
+                        //                 }
+                        //             }
+                        //         }
+                        //     });
+                        // });
+
+                        (() => {
+                            'use strict'
+
+                            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                            const forms = document.querySelectorAll('.needs-validation')
+
+                            // Loop over them and prevent submission
+                            Array.from(forms).forEach(form => {
+                                form.addEventListener('submit', event => {
+                                    if (!form.checkValidity()) {
+                                        event.preventDefault()
+                                        event.stopPropagation()
                                     }
-                                }
-                            });
-                        });
+
+                                    form.classList.add('was-validated')
+                                }, false)
+                            })
+                        })()
 
                         var signUpReq;
 
@@ -119,7 +174,6 @@ include 'header.php';
 
                             var $form = $(this);
                             var $inputs = $form.find("input, select, button, textarea");
-                            console.log($inputs);
                             var serializedData = $form.serialize();
 
                             // Let's disable the inputs for the duration of the Ajax request.
@@ -135,7 +189,7 @@ include 'header.php';
                             });
 
                             signUpReq.done(function(response, textStatus, jqXHR) {
-                                console.log("Hooray, it worked!");
+                                console.log("The user signed up!");
                                 console.log(response);
                             });
 
@@ -144,8 +198,6 @@ include 'header.php';
                                     "The following error occurred: " +
                                     textStatus, errorThrown
                                 );
-                                console.log(textStatus);
-                                console.log(errorThrown);
                                 console.log(JSON.parse(jqXHR.responseText));
                             });
 

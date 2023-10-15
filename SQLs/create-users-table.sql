@@ -4,7 +4,7 @@ CREATE TABLE users (
     username varchar(50) NOT NULL,
     email varchar(128) NOT NULL,
     password varchar(128) NOT NULL,
-    avatar varchar(50),
+    avatar varchar(255),
     location varchar(50),
     bio text,
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,

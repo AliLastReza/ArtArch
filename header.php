@@ -8,12 +8,13 @@ session_start();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Code of "How To Create A Login System In PHP For Beginners"</title>
+    <title>ArtArc -> A Place for Art & Artists</title>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/artist.css" rel="stylesheet">
     <script src="assets/js/jquery-3.7.0.min.js"></script>
 
     <style>
+        input:required + label::after { content: " *"; }
     </style>
 </head>
 
@@ -34,15 +35,15 @@ session_start();
                 </form>
 
                 <?php
-                if (isset($_SESSION["useruid"])) {
+                if (isset($_SESSION["userId"])) {
                     echo '
                     <div class="dropdown text-end">
                         <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://github.com/mdo.png" alt="mdo" class="rounded-circle" width="32" height="32">
                         </a>
                         <ul class="dropdown-menu text-small" style="">
-                            <li><a class="dropdown-item" href="#">New project...</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="upload-artwork.php">Upload A New Piece</a></li>
+                            <li><a class="dropdown-item" href="my-pieces.php">My Pieces</a></li>
                             <li><a class="dropdown-item" href="#">Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">

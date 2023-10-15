@@ -56,11 +56,14 @@ if (count($errors)) {
     exit();
 }
 
-$result = create_user($conn, $name, $email, $username, $pwd);
+$result = createUser($conn, $name, $email, $username, $pwd);
 
 if ($result["isCreated"]) {
     $response["status"] = "success";
     $response["status_code"] = 200;
+    header("/ArtArc/");
+    include_once("functions.inc.php");
+    loginUser($conn, $username, $pwd, "/ArtArc/sign-up.php");
 } else {
     $response["status"] = "failed";
     $response["status_code"] = 503;
